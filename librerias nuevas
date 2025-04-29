@@ -8,3 +8,45 @@ python -m pip install geopandas
 
 
 pip install geopandas[all]
+
+
+pip list
+
+####
+
+pip uninstall pandas
+pip uninstall geopandas
+pip uninstall fiona
+pip uninstall pyproj
+pip uninstall shapely
+pip uninstall rtree
+pip uninstall gdal
+pip uninstall matplotlib
+pip uninstall seaborn
+pip uninstall statsmodels
+pip uninstall scikit-learn
+pip uninstall xarray
+pip uninstall dask
+######
+
+
+
+conda create -n nuevo_ambiente python=3.11
+conda activate nuevo_ambiente
+conda install geopandas
+
+
+python --version
+
+
+python -m pip install --upgrade pip setuptools wheel
+
+pip uninstall pandas geopandas fiona shapely pyproj rtree gdal
+
+
+pip install pandas geopandas[all]
+
+
+
+
+pip install --upgrade pip setuptools wheel
