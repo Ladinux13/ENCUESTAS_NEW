@@ -1,0 +1,45 @@
+### Función para renombrar columnas de un dataframe
+def Rename_Frame(Data, Pre, Letra):
+    """
+    Renombra las columnas de un DataFrame según un prefijo y un formato definido.
+
+    Argumentos:
+    Data : pd.DataFrame
+        DataFrame cuyas columnas serán renombradas.
+    Pre : str
+        Prefijo que se antepone a cada nuevo nombre de columna.
+    Letra : str
+        Formato para generar los nombres de las columnas (por ejemplo, "{:02d}" para números con ceros a la izquierda).
+
+    Retorna:
+    tuple:
+        - Dict : dict
+            Diccionario que mapea los nombres originales de las columnas con los nuevos nombres.
+        - Data : pd.DataFrame
+            DataFrame con las columnas renombradas.
+    """
+    # Genera una lista de nuevos nombres para las columnas usando el prefijo y el formato proporcionado.
+    # Por ejemplo, si Pre = 'C', Letra = '{:02d}', y hay 3 columnas, los nombres serán ['C01', 'C02', 'C03'].
+    Name = ['{}{}'.format(Pre, Letra.format(i+1)) for i in range(len(Data.columns))]
+
+    # Crea un diccionario que mapea los nombres originales de las columnas a los nuevos nombres.
+    Dict = dict(zip(Data.columns, Name))
+
+    # Renombra las columnas del DataFrame utilizando el diccionario creado.
+    Data = Data.rename(columns=Dict)
+
+    # Retorna el diccionario de equivalencias y el DataFrame con los nombres de columnas actualizados.
+    return (Dict, Data)
+
+
+### > Renombramiento y creación de diccionario de columnas
+#>
+Pla_D, Pla_N = Rename_Frame(Platilla_New, 'P', '{}')
+
+#> Platilla_New = aca poner el dataframe que se va a renombras
+
+
+###### 
+
+#> Pla_D = El diccionario que guarda el nombne de las columnas
+#> Pla_N =  El nuevo dataframe con las columnas renombradas con "P"
