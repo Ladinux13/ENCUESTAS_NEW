@@ -1,0 +1,22 @@
+### DBSCAN Mapas
+
+os.makedirs(SAlidas + "DBSCAN_maps", exist_ok=True)
+
+columnas_periodos = Data_Markov_2.columns[6:16]
+
+# Iterar sobre cada periodo
+for i, col in enumerate(columnas_periodos):
+    riesgo = Data_Markov_2[col].values
+    X = np.column_stack([Data_Markov_2['x'], Data_Markov_2['y'], riesgo])
+
+    X_scaled = StandardScaler().fit_transform(X)
+    db = DBSCAN(eps=0.5, min_samples=3).fit(X_scaled)
+
+    Data_Markov_2[f'DBSCAN_{col}'] = db.labels_
+
+    fig, ax = plt.subplots(figsize=(10, 8))
+    Data_Markov_2.plot(column=f'DBSCAN_{col}', cmap='tab10', legend=True, ax=ax)
+    plt.title(f'DBSCAN Clusters - {col}')
+    plt.axis('off')
+    plt.savefig(f'{SAlidas}DBSCAN_maps/DBSCAN_{col}.png', bbox_inches='tight')
+    plt.close()
