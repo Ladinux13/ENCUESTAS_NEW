@@ -1,0 +1,63 @@
+import folium
+from folium.plugins import TimestampedGeoJson
+import pandas as pd
+import geopandas as gpd
+import json
+from branca.colormap import linear
+
+# Asegúrate de que la geometría esté en EPSG:4326
+Data_Markov_2 = Data_Markov_2.to_crs(epsg=4326)
+
+# Columnas de periodos
+columnas_periodos = Data_Markov_2.columns[6:16]
+
+# Crear lista de features para cada tiempo
+features = []
+for _, row in Data_Markov_2.iterrows():
+    for col in columnas_periodos:
+        cluster_value = row[col]
+        if pd.notnull(cluster_value):
+            color = f'#{hash(cluster_value) % 0xFFFFFF:06x}'  # Genera un color único por clúster
+
+            feature = {
+                'type': 'Feature',
+                'geometry': row['geometry'].__geo_interface__,
+                'properties': {
+                    'time': col + '-01',  # Timestamp válido
+                    'popup': f"{col}: Cluster {cluster_value}",
+                    'style': {
+                        'color': color,
+                        'fillColor': color,
+                        'weight': 1,
+                        'fillOpacity': 0.6
+                    }
+                }
+            }
+            features.append(feature)
+
+# Construir el geojson animado
+geojson_dict = {
+    'type': 'FeatureCollection',
+    'features': features
+}
+
+# Crear mapa centrado
+m = folium.Map(location=[Data_Markov_2.geometry.centroid.y.mean(),
+                         Data_Markov_2.geometry.centroid.x.mean()],
+               zoom_start=5)
+
+# Agregar animación temporal
+TimestampedGeoJson(
+    geojson_dict,
+    period='P1M',
+    add_last_point=False,
+    auto_play=True,
+    loop=False,
+    max_speed=1,
+    loop_button=True,
+    date_options='YYYY-MM',
+    time_slider_drag_update=True
+).add_to(m)
+
+# Guardar mapa
+m.save('mapa_animado_DBSCAN.html')
